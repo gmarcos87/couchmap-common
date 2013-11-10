@@ -3,6 +3,9 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     // lint js files
     jshint: {
+      options: {
+        '-W025': true // Missing name in function declaration.
+      },
       files: ['**/*.js', '!node_modules/**/*.js']
     },
     // jasmine unit tests
