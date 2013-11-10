@@ -1,6 +1,24 @@
 var common = require('../../');
 var _ = require('underscore');
 
+describe('coarse_reduce', function() {
+  var values = [
+    {count: 1, lat: 10, lon: 20 },
+    {count: 1, lat: 30, lon: 60 }
+  ];
+  var reduced = common.coarse_reduce(['x','y'], values, false);
+  it('handles map output', function() {
+    expect(reduced).toEqual(
+      {count: 2, lat: 20, lon: 40}
+    );
+  });
+  it('handles rereduce', function() {
+    expect(common.coarse_reduce(null, [reduced,reduced], true)).toEqual(
+      {count: 4, lat: 20, lon: 40}
+    );
+  });
+});
+
 describe('bbox', function() {
   var ref = {
     string: {bbox: '52.1,13.2,53.1,13.91', fun: 'toString'},

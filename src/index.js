@@ -12,7 +12,7 @@ module.exports.lat2tile = function(lat, zoom) {
 };
 
 /* generates coarse keys */
-module.exports.coarse_keys = function(lat, lon) {
+module.exports.coarse_map_keys = function(lat, lon) {
   var keys = [];
   if (-85.0511<=lat && lat<=85.0511 && -180<=lon && lon<=180) {
     for (var zoom=0; zoom<=18; zoom++) {
@@ -24,6 +24,39 @@ module.exports.coarse_keys = function(lat, lon) {
     }
   }
   return keys;
+};
+
+/* reduce function for coarsening
+
+   returns an object of the form
+   {
+     count: 1337,
+     lat: 51.2,
+     lon: 13.5
+    }
+    where lat/lon are the arithmetic means of all lats/lons
+*/
+module.exports.coarse_reduce = function(key, values, rereduce) {
+  var sum = function(arr, key) {
+    return _.reduce(_.pluck(arr, key), function(s, a) {return s+a;});
+  };
+  var count = 0;
+  var lat = 0;
+  var lon = 0;
+  _.each(values, function(v) {
+    count += v.count;
+    lat += v.lat*v.count;
+    lon += v.lon*v.count;
+  });
+  if (count>0) {
+    lat /= count;
+    lon /= count;
+  }
+  return {
+    count: count,
+    lat: lat,
+    lon: lon
+  };
 };
 
 /* this function returns a Bbox object with converter methods.
