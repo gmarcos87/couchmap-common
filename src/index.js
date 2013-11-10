@@ -120,10 +120,10 @@ module.exports.bbox = function(bbox_in) {
         x = lon2tile(c_lon, zoom),
         y = lat2tile(c_lat, zoom);
 
-    for (var xmin=x; this.contains(center.lat, tile2lon(xmin, zoom)); xmin--){}
-    for (var xmax=x+1; this.contains(center.lat, tile2lon(xmax, zoom)); xmax++){}
-    for (var ymin=y; this.contains(tile2lat(ymin, zoom), center.lng); ymin--){}
-    for (var ymax=y+1; this.contains(tile2lat(ymax, zoom), center.lng); ymax++){}
+    for (var xmin=x; this.contains(c_lat, tile2lon(xmin, zoom)); xmin--){}
+    for (var xmax=x+1; this.contains(c_lat, tile2lon(xmax, zoom)); xmax++){}
+    for (var ymin=y; this.contains(tile2lat(ymin, zoom), c_lon); ymin--){}
+    for (var ymax=y+1; this.contains(tile2lat(ymax, zoom), c_lon); ymax++){}
 
     tiles = [];
     for (y=ymin; y<ymax; y++) {
