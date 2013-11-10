@@ -38,7 +38,7 @@ module.exports.coarse_map_keys = function(lat, lon) {
     }
     where lat/lon are the arithmetic means of all lats/lons
 */
-module.exports.coarse_reduce = function(key, values, rereduce) {
+module.exports.coarse_reduce = function(keys, values, rereduce) {
   var sum = function(arr, key) {
     return _.reduce(_.pluck(arr, key), function(s, a) {return s+a;});
   };
