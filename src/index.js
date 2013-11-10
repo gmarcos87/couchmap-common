@@ -5,12 +5,22 @@ module.exports._ = _;
 /* for lon2tile and lat2tile: see
    http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
 */
-module.exports.lon2tile = function(lon, zoom) {
+var lon2tile = module.exports.lon2tile = function(lon, zoom) {
   return (Math.floor((lon+180)/360*Math.pow(2,zoom)));
 };
 
-module.exports.lat2tile = function(lat, zoom) {
+var lat2tile = module.exports.lat2tile = function(lat, zoom) {
   return (Math.floor((1-Math.log(Math.tan(lat*Math.PI/180) + 1/Math.cos(lat*Math.PI/180))/Math.PI)/2 *Math.pow(2,zoom)));
+};
+
+// returns NW-corner of tile
+var tile2lon = module.exports.tile2lon = function(x,z) {
+  return (x/Math.pow(2,z)*360-180);
+};
+
+var tile2lat = module.exports.tile2lat = function(y,z) {
+  var n=Math.PI-2*Math.PI*y/Math.pow(2,z);
+  return (180/Math.PI*Math.atan(0.5*(Math.exp(n)-Math.exp(-n))));
 };
 
 /* generates coarse keys */
@@ -20,8 +30,8 @@ module.exports.coarse_map_keys = function(lat, lon) {
     for (var zoom=0; zoom<=18; zoom++) {
       keys.push([
           zoom,
-          module.exports.lon2tile(lon, zoom),
-          module.exports.lat2tile(lat, zoom)
+          lon2tile(lon, zoom),
+          lat2tile(lat, zoom)
         ]);
     }
   }
@@ -103,6 +113,25 @@ module.exports.bbox = function(bbox_in) {
   };
   this.contains = function(lat, lon) {
     return bbox[0]<=lat && lat<=bbox[2] && bbox[1]<=lon && lon<=bbox[3];
+  };
+  this.toTiles = function(zoom) {
+    var c_lat = (bbox[0]+bbox[2]) / 2,
+        c_lon = (bbox[1]+bbox[3]) / 2,
+        x = lon2tile(c_lon, zoom),
+        y = lat2tile(c_lat, zoom);
+
+    for (var xmin=x; this.contains(center.lat, tile2lon(xmin, zoom)); xmin--){}
+    for (var xmax=x+1; this.contains(center.lat, tile2lon(xmax, zoom)); xmax++){}
+    for (var ymin=y; this.contains(tile2lat(ymin, zoom), center.lng); ymin--){}
+    for (var ymax=y+1; this.contains(tile2lat(ymax, zoom), center.lng); ymax++){}
+
+    tiles = [];
+    for (y=ymin; y<ymax; y++) {
+      for (x=xmin; x<xmax; x++) {
+        tiles.push([zoom,x,y]);
+      }
+    }
+    return tiles;
   };
   return this;
 };
