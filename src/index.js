@@ -1,5 +1,7 @@
 var _ = require('underscore');
 
+module.exports._ = _;
+
 /* for lon2tile and lat2tile: see
    http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
 */
