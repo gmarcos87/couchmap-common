@@ -135,3 +135,20 @@ module.exports.bbox = function(bbox_in) {
   };
   return this;
 };
+
+/* filter_id_or_bbox
+*/
+module.exports.filter_id_or_bbox = function(doc, req) {
+  var parameters = JSON.parse(req.body);
+
+  // sanitize input
+  if (!_.isArray(parameters.ids)) {
+    parameters.ids = [];
+  }
+  var bbox = module.exports.bbox(parameters.bbox);
+
+  if (parameters.ids.indexOf(doc._id)>=0 ||
+      bbox && bbox.contains(doc.lat, doc.lon)) {
+    return true;
+  }
+};
