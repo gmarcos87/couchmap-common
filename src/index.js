@@ -23,11 +23,14 @@ var tile2lat = module.exports.tile2lat = function(y,z) {
   return (180/Math.PI*Math.atan(0.5*(Math.exp(n)-Math.exp(-n))));
 };
 
+module.exports.coarse_min_zoom = 0;
+module.exports.coarse_max_zoom = 18;
 /* generates coarse keys */
 module.exports.coarse_map_keys = function(lat, lon) {
   var keys = [];
   if (-85.0511<=lat && lat<=85.0511 && -180<=lon && lon<=180) {
-    for (var zoom=0; zoom<=18; zoom++) {
+    for (var zoom=module.exports.coarse_min_zoom;
+        zoom<=module.exports.coarse_max_zoom; zoom++) {
       keys.push([
           zoom,
           lon2tile(lon, zoom),
