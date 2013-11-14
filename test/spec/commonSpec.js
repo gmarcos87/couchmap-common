@@ -3,18 +3,18 @@ var _ = require('underscore');
 
 describe('coarse_reduce', function() {
   var values = [
-    {count: 1, lat: 10, lon: 20 },
-    {count: 1, lat: 30, lon: 60 }
+    {count: 1, lat: 10, lon: 20, bbox_west: 20, bbox_east: 20, bbox_south: 10, bbox_north: 10 },
+    {count: 1, lat: 30, lon: 60, bbox_west: 60, bbox_east: 60, bbox_south: 30, bbox_north: 30 }
   ];
   var reduced = common.coarse_reduce(['x','y'], values, false);
   it('handles map output', function() {
     expect(reduced).toEqual(
-      {count: 2, lat: 20, lon: 40}
+      {count: 2, lat: 20, lon: 40, bbox_west: 20, bbox_east: 60, bbox_south: 10, bbox_north: 30 }
     );
   });
   it('handles rereduce', function() {
     expect(common.coarse_reduce(null, [reduced,reduced], true)).toEqual(
-      {count: 4, lat: 20, lon: 40}
+      {count: 4, lat: 20, lon: 40, bbox_west: 20, bbox_east: 60, bbox_south: 10, bbox_north: 30 }
     );
   });
 });

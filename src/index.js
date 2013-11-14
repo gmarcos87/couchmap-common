@@ -70,7 +70,11 @@ module.exports.coarse_reduce = function(keys, values, rereduce) {
   return {
     count: count,
     lat: lat,
-    lon: lon
+    lon: lon,
+    bbox_west: _.min(_.pluck(values, 'bbox_west')),
+    bbox_east: _.max(_.pluck(values, 'bbox_east')),
+    bbox_south: _.min(_.pluck(values, 'bbox_south')),
+    bbox_north: _.max(_.pluck(values, 'bbox_north')),
   };
 };
 
