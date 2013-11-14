@@ -25,6 +25,19 @@ var tile2lat = module.exports.tile2lat = function(y,z) {
 
 module.exports.coarse_min_zoom = 0;
 module.exports.coarse_max_zoom = 18;
+
+module.exports.validate_zoom = function(zoom) {
+  var min = module.exports.coarse_min_zoom;
+  var max = module.exports.coarse_max_zoom;
+  if (zoom<min) {
+    return min;
+  }
+  if (zoom>max) {
+    return max;
+  }
+  return zoom;
+};
+
 /* generates coarse keys */
 module.exports.coarse_map_keys = function(lat, lon) {
   var keys = [];
