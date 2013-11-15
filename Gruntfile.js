@@ -10,6 +10,7 @@ module.exports = function(grunt) {
     },
     // jasmine unit tests
     jasmine_node: {
+      projectRoot: 'test',
       specNameMatcher: 'Spec',
       forceExit: true
     }
