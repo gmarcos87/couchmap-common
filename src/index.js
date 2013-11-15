@@ -97,6 +97,7 @@ module.exports.coarse_reduce = function(keys, values, rereduce) {
    (lat1,lon1 is south-west; lat2,lon2 is north-east):
    string (e.g. in url):    lat1,lon1,lat2,lon2
    leaflet (LatLngBounds):  [[lat1,lon1], [lat2,lon2]]
+   leaflet (LatLngBounds):  object
    geocouch (spatial view): [lon1, lat1, lon2, lat2]
 
    the constructor takes any of the above bbox formats
@@ -115,6 +116,11 @@ module.exports.bbox = function(bbox_in) {
       // geocouch incoming
       bbox = [bbox_in[1],bbox_in[0],bbox_in[3],bbox_in[2]];
     }
+  } else if (_.isFunction(bbox_in.getSouthWest) && 
+      _.isFunction(bbox_in.getNorthEast)) {
+    var sw = bbox_in.getSouthWest();
+    var ne = bbox_in.getNorthEast();
+    bbox = [sw.lat, sw.lng, ne.lat, ne.lng];
   }
   // check if bbox is valid
   if (bbox.length!=4 || !_.every(bbox, _.isNumber) || _.some(bbox, _.isNaN) ||
