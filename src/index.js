@@ -39,19 +39,30 @@ module.exports.validate_zoom = function(zoom) {
 };
 
 /* generates coarse keys */
-module.exports.coarse_map_keys = function(lat, lon) {
-  var keys = [];
+module.exports.coarse_map = function(lat, lon) {
+  var pairs = [];
   if (-85.0511<=lat && lat<=85.0511 && -180<=lon && lon<=180) {
     for (var zoom=module.exports.coarse_min_zoom;
         zoom<=module.exports.coarse_max_zoom; zoom++) {
-      keys.push([
+      pairs.push({
+        key: [
           zoom,
           lon2tile(lon, zoom),
           lat2tile(lat, zoom)
-        ]);
+        ],
+        val: {
+          count: 1,
+          lat: lat,
+          lon: lon,
+          bbox_west: lon,
+          bbox_east: lon,
+          bbox_south: lat,
+          bbox_north: lat
+        }
+      });
     }
   }
-  return keys;
+  return pairs;
 };
 
 /* reduce function for coarsening
@@ -103,6 +114,9 @@ module.exports.coarse_reduce = function(keys, values, rereduce) {
    the constructor takes any of the above bbox formats
 */
 module.exports.bbox = function(bbox_in) {
+  if (!bbox_in) {
+    return undefined;
+  }
   // store bbox in array of form [lat1,lon1,lat2,lon2] internally
   var bbox = [];
   if (_.isString(bbox_in)) {
